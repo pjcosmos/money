@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Money Manager</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center my-4">My Money Manager</h1>
+        
+        <div class="row">
+            <!-- Left Column: Transaction Form -->
+            <div class="col-lg-4">
+                <div class="card card-body mb-4">
+                    <h3 class="my-3">내역 추가</h3>
+                    <form id="transaction-form">
+                        <div class="form-group">
+                            <label for="date">날짜</label>
+                            <input type="date" id="date" class="form-control" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">내용</label>
+                            <input type="text" id="description" class="form-control" placeholder="내용을 입력하세요...">
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">금액</label>
+                            <input type="number" id="amount" class="form-control" placeholder="금액을 입력하세요...">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" id="income-radio" value="income" checked>
+                                <label class="form-check-label" for="income-radio">수입</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" id="expense-radio" value="expense">
+                                <label class="form-check-label" for="expense-radio">지출</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="transaction-category">카테고리</label>
+                            <select id="transaction-category" class="form-control"></select>
+                        </div>
+                        <button class="btn btn-primary btn-block">내역 추가</button>
+                    </form>
+                </div>
+                <button class="btn btn-secondary btn-block" data-toggle="modal" data-target="#category-modal">카테고리 관리</button>
+            </div>
+
+            <!-- Right Column: Data Display -->
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="card card-body flex-grow-1">
+                        <h4>잔액</h4>
+                        <h2 id="balance">0 원</h2>
+                    </div>
+                    <button class="btn btn-secondary ml-3" data-toggle="modal" data-target="#category-modal">카테고리 관리</button>
+                </div>
+
+                <div class="row my-3">
+                    <div class="col-md-6">
+                        <div class="card text-white bg-success">
+                            <div class="card-body">
+                                <h4>수입</h4>
+                                <h3 id="income">0 원</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card text-white bg-danger">
+                            <div class="card-body">
+                                <h4>지출</h4>
+                                <h3 id="expense">0 원</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs" id="view-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="monthly-tab" data-toggle="tab" href="#monthly-view" role="tab">월별</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="weekly-tab" data-toggle="tab" href="#weekly-view" role="tab">주별</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="search-tab" data-toggle="tab" href="#search-view" role="tab">검색</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="budget-tab" data-toggle="tab" href="#budget-view" role="tab">예산</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="memo-tab" data-toggle="tab" href="#memo-view" role="tab">메모</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="view-tabs-content">
+                    <div class="tab-pane fade show active" id="monthly-view" role="tabpanel">
+                        <div id="calendar-container" class="mt-3"></div>
+                    </div>
+                    <div class="tab-pane fade" id="weekly-view" role="tabpanel">
+                        <div id="weekly-calendar-container" class="mt-3"></div>
+                    </div>
+                    <div class="tab-pane fade" id="search-view" role="tabpanel">
+                        <div class="card card-body mt-3">
+                            <form id="filter-form" class="row">
+                                <div class="col-md-4">
+                                    <input type="text" id="search-description" class="form-control" placeholder="내용 검색...">
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="filter-category" class="form-control">
+                                        <option value="">모든 카테고리</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        <input type="date" id="start-date" class="form-control">
+                                        <input type="date" id="end-date" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" id="clear-filters" class="btn btn-secondary">초기화</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="search-results-container" class="mt-3">
+                            <!-- Search results will be injected here -->
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="budget-view" role="tabpanel">
+                        <div class="card card-body mt-3">
+                            <div id="total-income-section" class="mb-4 p-3 bg-light rounded" style="background-color: #1f2a40 !important;">
+                                <h5>이번 달 총 수입</h5>
+                                <div class="input-group">
+                                    <input type="number" id="total-monthly-income" class="form-control" placeholder="이번 달 총 수입액을 입력하세요...">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">원</span>
+                                    </div>
+                                </div>
+                                <div id="allocation-summary" class="d-flex justify-content-between mt-2 text-white">
+                                    <span>총 예산: <span id="total-allocated-budget">0</span> 원</span>
+                                    <span>남은 금액: <span id="unallocated-amount">0</span> 원</span>
+                                </div>
+                            </div>
+                            
+                            <h4 class="mb-3">카테고리별 예산 설정</h4>
+                            <div id="budget-list-container">
+                                <!-- Budget items will be injected here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="memo-view" role="tabpanel">
+                        <div class="card card-body mt-3">
+                            <h3 class="my-3">메모</h3>
+                            <div class="form-group">
+                                <textarea id="memo-input" class="form-control" rows="3" placeholder="정산, 돈 빌린 내역 등 메모를 입력하세요..."></textarea>
+                            </div>
+                            <button id="add-memo-btn" class="btn btn-info btn-block">메모 추가</button>
+                            <div id="memo-list" class="mt-3 list-group">
+                                <!-- Memos will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <!-- Category Management Modal -->
+    <div class="modal fade" id="category-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">카테고리 관리</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>수입 카테고리</h5>
+                            <ul id="income-category-list" class="list-group mb-3"></ul>
+                            <form id="add-income-category-form" class="form-inline">
+                                <input type="text" id="new-income-category-name" class="form-control mr-2 flex-grow-1" placeholder="새 수입 카테고리">
+                                <button type="submit" class="btn btn-success">추가</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>지출 카테고리</h5>
+                            <ul id="expense-category-list" class="list-group mb-3"></ul>
+                            <form id="add-expense-category-form" class="form-inline">
+                                <input type="text" id="new-expense-category-name" class="form-control mr-2 flex-grow-1" placeholder="새 지출 카테고리">
+                                <button type="submit" class="btn btn-danger">추가</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div class="modal fade" id="edit-transaction-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="edit-transaction-form">
+                    <div class="modal-header">
+                        <h5 class="modal-title">내역 수정</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-transaction-id">
+                        <div class="form-group">
+                            <label for="edit-date">날짜</label>
+                            <input type="date" id="edit-date" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-description">내용</label>
+                            <input type="text" id="edit-description" class="form-control" placeholder="내용을 입력하세요...">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-amount">금액</label>
+                            <input type="number" id="edit-amount" class="form-control" placeholder="금액을 입력하세요...">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="edit-type" id="edit-income-radio" value="income">
+                                <label class="form-check-label" for="edit-income-radio">수입</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="edit-type" id="edit-expense-radio" value="expense">
+                                <label class="form-check-label" for="edit-expense-radio">지출</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-transaction-category">카테고리</label>
+                            <select id="edit-transaction-category" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day Details Modal -->
+    <div class="modal fade" id="day-details-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="day-details-modal-title">상세 내역</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="day-details-modal-body">
+                    <!-- Transaction list will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

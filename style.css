@@ -1,0 +1,282 @@
+/* 1. Base & Typography */
+:root {
+    --background-color: #1a1a2e;
+    --surface-color: #162447;
+    --primary-color: #1f4068;
+    --primary-variant-color: #e43f5a;
+    --income-color: #00b894;
+    --expense-color: #ff7675;
+    --text-primary-color: #f5f6fa;
+    --text-secondary-color: #a7a7a7;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary-color);
+    font-size: 16px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--text-primary-color);
+}
+
+h1 {
+    color: var(--primary-variant-color);
+    text-shadow: 1px 1px 3px var(--shadow-color);
+}
+
+/* 2. Layout & Main Container */
+.container {
+    max-width: 1300px;
+    background: none;
+    padding-top: 2rem;
+}
+
+/* 3. Cards & Modals */
+.card, .modal-content {
+    background-color: var(--surface-color);
+    border: none;
+    color: var(--text-primary-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 20px var(--shadow-color);
+    transition: all 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px var(--shadow-color);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-color);
+}
+
+.modal-header .close {
+    color: var(--text-primary-color);
+    text-shadow: none;
+    opacity: 0.8;
+}
+.modal-header .close:hover {
+    color: #fff;
+    opacity: 1;
+}
+
+/* 4. Forms & Inputs */
+.form-control, .form-control:focus {
+    background-color: #1f2a40;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary-color);
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(228, 63, 90, 0.25);
+    border-color: var(--primary-variant-color);
+    background-color: #253352;
+}
+.form-control::placeholder {
+    color: var(--text-secondary-color);
+    opacity: 0.7;
+}
+.form-check-input {
+    cursor: pointer;
+}
+.form-check-input:checked {
+    background-color: var(--primary-variant-color);
+    border-color: var(--primary-variant-color);
+}
+
+/* 5. Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    border: none;
+}
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+.btn-primary {
+    background-image: linear-gradient(to right, #e43f5a, #b83b5e);
+    color: #fff;
+}
+.btn-primary:hover {
+    background-image: linear-gradient(to right, #b83b5e, #e43f5a);
+}
+.btn-secondary {
+    background: none;
+    border: 1px solid var(--text-secondary-color);
+    color: var(--text-secondary-color);
+}
+.btn-secondary:hover {
+    background: var(--text-secondary-color);
+    color: var(--background-color);
+}
+.btn-success { background-color: var(--income-color); color: #fff; }
+.btn-danger { background-color: var(--expense-color); color: #fff; }
+
+/* 6. Tabs */
+.nav-tabs {
+    border-bottom: 2px solid var(--border-color);
+}
+.nav-tabs .nav-link {
+    border: none;
+    color: var(--text-secondary-color);
+    font-weight: 500;
+    padding: 10px 20px;
+    margin-right: 5px;
+}
+.nav-tabs .nav-link:hover {
+    color: var(--primary-variant-color);
+}
+.nav-tabs .nav-link.active {
+    background-color: transparent;
+    color: var(--primary-variant-color);
+    border-bottom: 2px solid var(--primary-variant-color);
+}
+
+/* 7. Summary & Transaction Colors */
+#balance {
+    color: var(--primary-variant-color);
+    font-weight: 700;
+}
+.bg-success { background-color: transparent !important; border: 2px solid var(--income-color); color: var(--income-color); }
+.bg-danger { background-color: transparent !important; border: 2px solid var(--expense-color); color: var(--expense-color); }
+.bg-success h4, .bg-danger h4 { color: var(--text-primary-color); }
+.bg-success h3, .bg-danger h3 { font-weight: 700; }
+.bg-success h3 { color: var(--income-color); }
+.bg-danger h3 { color: var(--expense-color); }
+
+.list-group-item {
+    background-color: transparent;
+    border-color: var(--border-color);
+    padding: 1rem 1.25rem;
+}
+.list-group-item.income { border-left: 4px solid var(--income-color); }
+.list-group-item.expense { border-left: 4px solid var(--expense-color); }
+
+/* 8. Calendar */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+.calendar-header h4 {
+    color: var(--primary-variant-color);
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-top: 1px solid var(--border-color);
+}
+.calendar-day-header {
+    padding: 10px 0;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-secondary-color);
+    font-size: 0.9em;
+}
+.calendar-day {
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease-in-out;
+    min-height: 120px;
+    padding: 10px;
+    cursor: pointer;
+}
+.calendar-day:nth-child(7n) { border-right: none; }
+.calendar-day:hover {
+    background-color: rgba(31, 64, 104, 0.5);
+}
+.calendar-day.empty {
+    background-color: transparent;
+    cursor: default;
+}
+.day-number { font-weight: 600; color: #f5f6fa; }
+.day-income { color: var(--income-color); font-weight: 600; font-size: 0.9em; margin-top: 5px; }
+.day-expense { color: var(--expense-color); font-weight: 600; font-size: 0.9em; margin-top: 5px;}
+
+/* 9. Weekly & List Item Details */
+.weekly-day {
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.weekly-day:hover {
+    background-color: rgba(31, 64, 104, 0.5);
+    cursor: pointer;
+}
+.weekly-day h6 {
+    border-color: var(--border-color);
+    font-size: 1.1rem;
+}
+
+.text-success { color: var(--income-color) !important; }
+.text-danger { color: var(--expense-color) !important; }
+.text-muted { color: var(--text-secondary-color) !important; }
+
+/* 10. Buttons inside lists */
+.delete-btn, .edit-btn {
+    opacity: 0;
+    transition: all 0.3s ease;
+    border: none;
+    background: none;
+    padding: 2px 8px;
+}
+.list-group-item:hover .delete-btn,
+.list-group-item:hover .edit-btn {
+    opacity: 1;
+}
+
+.delete-btn { color: var(--expense-color); margin-left: 10px; }
+.delete-btn:hover { color: #fff; background-color: var(--expense-color); }
+.edit-btn { color: #82aaff; margin-left: 5px; }
+.edit-btn:hover { color: #fff; background-color: #82aaff; }
+
+.transaction-amount { font-weight: 600; }
+.transaction-description { margin-left: 10px; }
+.category-badge {
+    background-color: var(--primary-color);
+    color: var(--text-primary-color);
+    border: none;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+/* 11. Memo Section Specific Styles */
+#memo-list .list-group-item {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#memo-list .list-group-item p {
+    margin-bottom: 0;
+    color: var(--text-primary-color);
+}
+
+#memo-list .memo-delete-btn {
+    background-color: transparent;
+    border: none;
+    color: var(--expense-color);
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+#memo-list .memo-delete-btn:hover {
+    color: var(--primary-variant-color);
+}
