@@ -99,6 +99,11 @@
                     <button id="logout-btn" class="btn btn-outline-secondary ml-3">로그아웃</button>
                 </div>
 
+                <div id="savings-balance-container" class="card card-body flex-grow-1 mt-3" data-toggle="modal" data-target="#savings-modal" style="cursor: pointer;">
+                    <h4>적금</h4>
+                    <h2 id="savings-balance">0 원</h2>
+                </div>
+
                 <div class="row my-3">
                     <div class="col-md-6">
                         <div class="card text-white bg-success">
@@ -133,6 +138,9 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link" id="memo-tab" data-toggle="tab" href="#memo-view" role="tab">메모</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="savings-tab" data-toggle="tab" href="#savings-view" role="tab">적금</a>
                     </li>
                 </ul>
 
@@ -200,6 +208,15 @@
                             <button id="add-memo-btn" class="btn btn-info btn-block">메모 추가</button>
                             <div id="memo-list" class="mt-3 list-group">
                                 <!-- Memos will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="savings-view" role="tabpanel">
+                        <div class="card card-body mt-3">
+                            <h3 class="my-3">적금 내역</h3>
+                            <button id="add-savings-btn" class="btn btn-primary btn-block mb-3">새 적금 추가</button>
+                            <div id="savings-list" class="list-group">
+                                <!-- Savings will be loaded here -->
                             </div>
                         </div>
                     </div>
@@ -305,6 +322,44 @@
                 </div>
                 <div class="modal-body" id="day-details-modal-body">
                     <!-- Transaction list will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Savings Management Modal -->
+    <div class="modal fade" id="savings-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">적금 관리</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="savings-form">
+                        <input type="hidden" id="savings-id">
+                        <div class="form-group">
+                            <label for="savings-name">적금 이름</label>
+                            <input type="text" id="savings-name" class="form-control" placeholder="적금 이름을 입력하세요..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="savings-amount">현재 잔액</label>
+                            <input type="number" id="savings-amount" class="form-control" placeholder="현재 잔액을 입력하세요..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="savings-goal">목표 금액 (선택)</label>
+                            <input type="number" id="savings-goal" class="form-control" placeholder="목표 금액을 입력하세요...">
+                        </div>
+                        <button type="submit" class="btn btn-primary">저장</button>
+                        <button type="button" id="cancel-savings-edit" class="btn btn-secondary d-none">취소</button>
+                    </form>
+                    <hr>
+                    <h5>내 적금 목록</h5>
+                    <div id="savings-list-modal" class="list-group">
+                        <!-- Savings list will be dynamically inserted here -->
+                    </div>
                 </div>
             </div>
         </div>
