@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: mymoney-backend
+    env: python
+    pythonVersion: "3.13.3"
+    region: singapore # 또는 user가 선택한 지역으로 변경
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "gunicorn backend.app:app"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mymoney-db
+          property: connectionString
+    # Render는 기본적으로 8000번 포트를 사용하도록 앱에 $PORT 환경 변수를 주입합니다.
+    # Flask 앱은 기본적으로 5000번 포트에서 실행되므로, gunicorn이 $PORT를 사용하도록 해야 합니다.
+    # 하지만 gunicorn은 기본적으로 8000번 포트를 사용하므로 추가 설정은 필요 없을 수 있습니다.
+    # 만약 에러가 발생하면 startCommand를 "gunicorn --bind 0.0.0.0:$PORT backend.app:app" 로 수정합니다.
+
+databases:
+  - name: mymoney-db
+    databaseName: mymoneydb # 실제 데이터베이스 이름은 Render에서 생성 시 지정한 이름
+    user: mymoneyuser # 실제 유저 이름은 Render에서 생성 시 지정한 이름
