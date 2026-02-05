@@ -1,9 +1,12 @@
 // DOM Elements
 const loginForm = document.getElementById('login-form');
+const usernameInput = document.getElementById('username'); // New ID input
 const passwordInput = document.getElementById('password');
 const loginError = document.getElementById('login-error');
 const loginContainer = document.getElementById('login-container');
 const appContent = document.getElementById('app-content');
+const logoutBtn = document.getElementById('logout-btn');
+const signupBtn = document.getElementById('signup-btn'); 
 
 const balance = document.getElementById('balance');
 const incomeEl = document.getElementById('income');
@@ -60,49 +63,107 @@ const memoInput = document.getElementById('memo-input');
 const addMemoBtn = document.getElementById('add-memo-btn');
 const memoList = document.getElementById('memo-list');
 
-// --- LOGIN LOGIC ---
-const CORRECT_PASSWORD = '0901';
-
-function checkLogin() {
-    if (localStorage.getItem('loggedIn') === 'true') {
-        loginContainer.classList.add('d-none');
-        appContent.classList.remove('d-none');
-        init(); // Initialize the app only after successful login
-    } else {
-        loginContainer.classList.remove('d-none');
-        appContent.classList.add('d-none');
-    }
-}
-
-function handleLogin(e) {
-    e.preventDefault();
-    const enteredPassword = passwordInput.value;
-
-    if (enteredPassword === CORRECT_PASSWORD) {
-        localStorage.setItem('loggedIn', 'true');
-        loginContainer.classList.add('d-none');
-        appContent.classList.remove('d-none');
-        init(); // Initialize the app after successful login
-        loginError.classList.add('d-none'); // Hide any previous error
-    } else {
-        loginError.textContent = '잘못된 비밀번호입니다.';
-        loginError.classList.remove('d-none');
-        passwordInput.value = ''; // Clear password input
-    }
-}
-
-
 // --- APP STATE ---
+let currentUser = null;
 let transactions = [];
 let categories = [];
 let budgets = [];
-let memos = []; // New memos array
+let memos = [];
 let viewedDate = new Date();
 
 const defaultCategories = {
     income: [{ id: 1, name: '월급' }, { id: 2, name: '용돈' }, { id: 3, name: '부수입' }],
     expense: [{ id: 4, name: '식비' }, { id: 5, name: '교통' }, { id: 6, name: '쇼핑' }, { id: 7, name: '기타' }]
 };
+
+// --- LOGIN/LOGOUT LOGIC ---
+function checkLogin() {
+    const lastUser = localStorage.getItem('money_app_lastUser');
+    if (lastUser) {
+        currentUser = lastUser;
+        loginContainer.style.display = 'none'; // Hide instead of d-none for Tailwind
+        appContent.classList.remove('d-none');
+        init(); // Initialize the app for the logged-in user
+    } else {
+        loginContainer.style.display = 'block';
+        appContent.classList.add('d-none');
+    }
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const enteredUsername = usernameInput.value.trim();
+
+    if (!enteredUsername) {
+        loginError.textContent = '아이디를 입력해주세요.';
+        loginError.classList.remove('d-none');
+        return;
+    }
+
+    // Check if account exists
+    const storedCategories = localStorage.getItem(`money_app_categories_${enteredUsername}`);
+    if (storedCategories === null) {
+        loginError.textContent = '존재하지 않는 계정입니다. 회원가입 해주세요.';
+        loginError.classList.remove('d-none');
+        usernameInput.value = '';
+        passwordInput.value = '';
+        return;
+    }
+
+    currentUser = enteredUsername;
+    localStorage.setItem('money_app_lastUser', currentUser);
+    
+    loginContainer.style.display = 'none';
+    appContent.classList.remove('d-none');
+    init();
+    loginError.classList.add('d-none');
+    usernameInput.value = '';
+    passwordInput.value = '';
+}
+
+function handleSignUp(e) {
+    e.preventDefault();
+    const enteredUsername = usernameInput.value.trim();
+
+    if (!enteredUsername) {
+        loginError.textContent = '사용할 아이디를 입력해주세요.';
+        loginError.classList.remove('d-none');
+        return;
+    }
+
+    const storedCategories = localStorage.getItem(`money_app_categories_${enteredUsername}`);
+    if (storedCategories !== null) {
+        loginError.textContent = '이미 존재하는 아이디입니다. 로그인해주세요.';
+        loginError.classList.remove('d-none');
+        return;
+    }
+
+    // New user, just log them in. `init` will create default data.
+    currentUser = enteredUsername;
+    localStorage.setItem('money_app_lastUser', currentUser);
+    
+    loginContainer.style.display = 'none';
+    appContent.classList.remove('d-none');
+    init();
+    loginError.classList.add('d-none');
+    usernameInput.value = '';
+    passwordInput.value = '';
+}
+
+function handleLogout() {
+    currentUser = null;
+    localStorage.removeItem('money_app_lastUser');
+    
+    transactions = [];
+    categories = [];
+    budgets = [];
+    memos = [];
+
+    appContent.classList.add('d-none');
+    loginContainer.style.display = 'block';
+    usernameInput.value = '';
+    passwordInput.value = '';
+}
 
 // --- DATE HELPER ---
 function toYYYYMMDD(date) {
@@ -121,15 +182,20 @@ function toYYYYMM(date) {
 
 
 // --- CATEGORY FUNCTIONS ---
-function loadCategories() { /* Unchanged */
-    const storedCategories = localStorage.getItem('money_app_categories');
-    if (storedCategories) { categories = JSON.parse(storedCategories); }
-    else {
+function loadCategories() {
+    if (!currentUser) return;
+    const storedCategories = localStorage.getItem(`money_app_categories_${currentUser}`);
+    if (storedCategories) {
+        categories = JSON.parse(storedCategories);
+    } else {
         categories = [...defaultCategories.income.map(c => ({...c, type: 'income'})), ...defaultCategories.expense.map(c => ({...c, type: 'expense'}))];
         saveCategories();
     }
 }
-function saveCategories() { localStorage.setItem('money_app_categories', JSON.stringify(categories)); }
+function saveCategories() {
+    if (!currentUser) return;
+    localStorage.setItem(`money_app_categories_${currentUser}`, JSON.stringify(categories));
+}
 function getCategoryById(id) { return categories.find(c => c.id === id); }
 
 function addCategory(e) {
@@ -146,14 +212,13 @@ function addCategory(e) {
     updateCategoryDropdowns();
     populateFilterCategoryDropdown();
     nameInput.value = '';
-    init(); // Re-initialize to refresh budget view
+    init();
 }
-function removeCategory(id) { /* Unchanged */
+function removeCategory(id) {
     const isUsed = transactions.some(t => t.categoryId === id);
     if (isUsed) { alert('이 카테고리를 사용하는 거래 내역이 있어 삭제할 수 없습니다.'); return; }
     if (confirm('정말 이 카테고리를 삭제하시겠습니까?')) {
         categories = categories.filter(c => c.id !== id);
-        // Also remove budgets associated with this category
         budgets = budgets.filter(b => b.categoryId !== id);
         saveCategories();
         saveBudgets();
@@ -163,7 +228,7 @@ function removeCategory(id) { /* Unchanged */
         init();
     }
 }
-function updateCategory(id) { /* Unchanged */
+function updateCategory(id) {
     const category = getCategoryById(id);
     const newName = prompt('새 카테고리 이름을 입력하세요:', category.name);
     if (newName && newName.trim() !== '') {
@@ -175,7 +240,7 @@ function updateCategory(id) { /* Unchanged */
         init();
     }
 }
-function renderCategoryManagementModal() { /* Unchanged */
+function renderCategoryManagementModal() {
     incomeCategoryList.innerHTML = '';
     expenseCategoryList.innerHTML = '';
     categories.forEach(c => {
@@ -191,13 +256,13 @@ function renderCategoryManagementModal() { /* Unchanged */
         listEl.appendChild(item);
     });
 }
-function updateCategoryDropdowns(type = null) { /* Unchanged */
+function updateCategoryDropdowns(type = null) {
     const mainFormType = incomeRadio.checked ? 'income' : 'expense';
     populateCategorySelect(categorySelect, mainFormType);
     const editFormType = type ? type : (editIncomeRadio.checked ? 'income' : 'expense');
     populateCategorySelect(editCategorySelect, editFormType);
 }
-function populateCategorySelect(selectElement, type) { /* Unchanged */
+function populateCategorySelect(selectElement, type) {
     const currentVal = selectElement.value;
     selectElement.innerHTML = '';
     categories.filter(c => c.type === type).forEach(c => {
@@ -237,12 +302,14 @@ function populateFilterCategoryDropdown() {
 
 // --- BUDGET FUNCTIONS ---
 function loadBudgets() {
-    const storedBudgets = localStorage.getItem('money_app_budgets');
+    if (!currentUser) return;
+    const storedBudgets = localStorage.getItem(`money_app_budgets_${currentUser}`);
     budgets = storedBudgets ? JSON.parse(storedBudgets) : [];
 }
 
 function saveBudgets() {
-    localStorage.setItem('money_app_budgets', JSON.stringify(budgets));
+    if (!currentUser) return;
+    localStorage.setItem(`money_app_budgets_${currentUser}`, JSON.stringify(budgets));
 }
 
 function getBudgetForCategoryAndMonth(categoryId, yearMonth) {
@@ -259,7 +326,7 @@ function updateBudget(categoryId, newAmount) {
         budgets.push({ categoryId, yearMonth, amount: newAmount });
     }
     saveBudgets();
-    renderBudgetView(); // Re-render the budget view to show updated values
+    renderBudgetView();
 }
 
 function renderBudgetView() {
@@ -315,12 +382,14 @@ function renderBudgetView() {
 
 // --- MEMO FUNCTIONS ---
 function loadMemos() {
-    const storedMemos = localStorage.getItem('money_app_memos');
+    if (!currentUser) return;
+    const storedMemos = localStorage.getItem(`money_app_memos_${currentUser}`);
     memos = storedMemos ? JSON.parse(storedMemos) : [];
 }
 
 function saveMemos() {
-    localStorage.setItem('money_app_memos', JSON.stringify(memos));
+    if (!currentUser) return;
+    localStorage.setItem(`money_app_memos_${currentUser}`, JSON.stringify(memos));
 }
 
 function addMemo() {
@@ -332,7 +401,7 @@ function addMemo() {
     const newMemo = { id: Date.now(), text: memoText, date: toYYYYMMDD(new Date()) };
     memos.push(newMemo);
     saveMemos();
-    memoInput.value = ''; // Clear the input field
+    memoInput.value = '';
     renderMemos();
 }
 
@@ -378,13 +447,17 @@ function renderMemos() {
 
 // --- TRANSACTION FUNCTIONS ---
 
-function loadTransactions() { /* Unchanged */
-    const storedTransactions = localStorage.getItem('money_app_transactions');
+function loadTransactions() {
+    if (!currentUser) return;
+    const storedTransactions = localStorage.getItem(`money_app_transactions_${currentUser}`);
     transactions = storedTransactions ? JSON.parse(storedTransactions) : [];
 }
-function saveTransactions() { localStorage.setItem('money_app_transactions', JSON.stringify(transactions)); }
+function saveTransactions() {
+    if (!currentUser) return;
+    localStorage.setItem(`money_app_transactions_${currentUser}`, JSON.stringify(transactions));
+}
 
-function addTransaction(e) { /* Unchanged */
+function addTransaction(e) {
     e.preventDefault();
     if ([description.value, amount.value, dateInput.value, categorySelect.value].some(val => !val || val.trim() === '')) {
         alert('모든 필드를 입력해주세요.'); return;
@@ -403,7 +476,7 @@ function removeTransaction(id) {
     if (confirm('정말 이 거래 내역을 삭제하시겠습니까?')) {
         transactions = transactions.filter(t => t.id !== id);
         saveTransactions();
-        dayDetailsModal.modal('hide'); // Close the details modal
+        dayDetailsModal.modal('hide');
         init();
     }
 }
@@ -419,7 +492,6 @@ function openEditTransactionModal(id) {
     populateCategorySelect(editCategorySelect, transaction.type);
     editCategorySelect.value = transaction.categoryId;
     
-    // Hide search results if open, or day details
     $('#search-view').removeClass('active show');
     dayDetailsModal.modal('hide'); 
 
@@ -502,7 +574,7 @@ function renderSearchResults() {
 function showDayDetails(dateString) {
     const dayTransactions = transactions.filter(t => t.date === dateString).sort((a,b) => b.id - a.id);
     dayDetailsModalTitle.textContent = `${dateString} 내역`;
-    dayDetailsModalBody.innerHTML = ''; // Clear previous content
+    dayDetailsModalBody.innerHTML = '';
 
     if (dayTransactions.length === 0) {
         dayDetailsModalBody.innerHTML = '<p class="text-muted text-center">이 날짜에 거래 내역이 없습니다.</p>';
@@ -644,35 +716,42 @@ function updateOverallValues() {
 
 // --- INITIALIZATION ---
 function init() {
+    // Reset data arrays before loading
+    transactions = [];
+    categories = [];
+    budgets = [];
+    memos = [];
+
     loadTransactions();
     loadCategories();
-    loadBudgets(); // Load budgets
-    loadMemos(); // Load memos
+    loadBudgets();
+    loadMemos();
     dateInput.value = toYYYYMMDD(new Date());
-    renderMemos(); // Render memos
+    renderMemos();
     updateOverallValues();
     updateCategoryDropdowns();
     populateFilterCategoryDropdown();
     renderCategoryManagementModal();
     const activeTabId = document.querySelector('.nav-tabs .nav-link.active').id;
     
-    // Ensure correct tab is shown
     $('.nav-tabs a[href="#' + activeTabId.replace('-tab', '-view') + '"]').tab('show');
 
     switch (activeTabId) {
         case 'monthly-tab': renderMonthlyCalendar(); break;
         case 'weekly-tab': renderWeeklyCalendar(); break;
         case 'search-tab': renderSearchResults(); break;
-        case 'budget-tab': renderBudgetView(); break; // Render budget view
+        case 'budget-tab': renderBudgetView(); break;
         default: renderMonthlyCalendar();
     }
 }
 
 // Initial Load & Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
-    checkLogin(); // Check login status on page load
+    checkLogin();
 });
-loginForm.addEventListener('submit', handleLogin); // Handle login form submission
+loginForm.addEventListener('submit', handleLogin);
+logoutBtn.addEventListener('click', handleLogout);
+signupBtn.addEventListener('click', handleSignUp);
 
 form.addEventListener('submit', addTransaction);
 editTransactionForm.addEventListener('submit', saveTransactionChanges);
@@ -686,8 +765,8 @@ editExpenseRadio.addEventListener('change', () => populateCategorySelect(editCat
 document.getElementById('monthly-tab').addEventListener('click', renderMonthlyCalendar);
 document.getElementById('weekly-tab').addEventListener('click', renderWeeklyCalendar);
 document.getElementById('search-tab').addEventListener('click', renderSearchResults);
-document.getElementById('budget-tab').addEventListener('click', renderBudgetView); // Budget tab listener
-document.getElementById('memo-tab').addEventListener('click', renderMemos); // Memo tab listener
+document.getElementById('budget-tab').addEventListener('click', renderBudgetView);
+document.getElementById('memo-tab').addEventListener('click', renderMemos);
 
 
 calendarContainer.addEventListener('click', e => {
@@ -728,7 +807,6 @@ budgetListContainer.addEventListener('change', e => {
             updateBudget(categoryId, newAmount);
         } else {
             alert('유효한 예산 금액을 입력해주세요.');
-            // Revert input value if invalid
             e.target.value = getBudgetForCategoryAndMonth(categoryId, toYYYYMM(viewedDate))?.amount || 0;
         }
     }
@@ -739,7 +817,7 @@ addMemoBtn.addEventListener('click', addMemo);
 
 // When modals are hidden, refresh the calendar behind them
 $('body').on('hidden.bs.modal', function () {
-    if (!$('.modal.show').length){ // check if any other modals are open
+    if (!$('.modal.show').length){
         init();
     }
 });

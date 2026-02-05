@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Money Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,23 +12,36 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="login-container" class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h3>로그인</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="login-form">
-                            <div class="form-group">
-                                <label for="password">비밀번호</label>
-                                <input type="password" id="password" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">로그인</button>
-                            <div id="login-error" class="alert alert-danger mt-3 d-none"></div>
-                        </form>
-                    </div>
+    <div id="login-container">
+        <div class="bg-slate-900 min-h-screen flex flex-col items-center justify-center p-4">
+            <div class="w-full max-w-sm">
+                <div class="bg-slate-800 shadow-lg rounded-xl p-8">
+                    <h3 class="text-3xl font-bold text-center text-white mb-8 break-keep">
+                        로그인
+                    </h3>
+                    <form id="login-form">
+                        <div class="mb-4">
+                            <label for="username" class="block text-slate-400 text-sm font-bold mb-2">아이디</label>
+                            <input type="text" id="username" class="w-full px-4 py-3 rounded-lg bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="아이디를 입력하세요" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="password" class="block text-slate-400 text-sm font-bold mb-2">비밀번호</label>
+                            <input type="password" id="password" class="w-full px-4 py-3 rounded-lg bg-slate-700 text-white border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="비밀번호를 입력하세요" required>
+                        </div>
+                        
+                        <div id="login-error" class="bg-red-900 border border-red-400 text-red-100 px-4 py-3 rounded-lg relative mb-6 d-none text-center">
+                            <!-- Error message here -->
+                        </div>
+        
+                        <div class="flex flex-col items-center justify-between">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors">
+                                로그인
+                            </button>
+                            <button type="button" id="signup-btn" class="mt-4 text-sm text-slate-400 hover:text-white transition-colors">
+                                계정이 없으신가요? <span class="font-bold underline">회원가입</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -82,7 +96,7 @@
                         <h4>잔액</h4>
                         <h2 id="balance">0 원</h2>
                     </div>
-
+                    <button id="logout-btn" class="btn btn-outline-secondary ml-3">로그아웃</button>
                 </div>
 
                 <div class="row my-3">
