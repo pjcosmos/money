@@ -1,5 +1,5 @@
 // --- Globals ---
-const API_BASE_URL = 'http://127.0.0.1:5001'; // The Flask server URL
+const API_BASE_URL = 'http://localhost:5001'; // The Flask server URL
 
 // --- DOM Elements ---
 const loginForm = document.getElementById('login-form');
