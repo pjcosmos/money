@@ -1,7 +1,3 @@
-Flask
-Flask-SQLAlchemy
-Flask-Migrate
-Flask-Bcrypt
-Flask-Login
-python-dotenv
-Flask-Cors
+gunicorn==25.0.1
+packaging==26.0
+psycopg2-binary==2.9.11
