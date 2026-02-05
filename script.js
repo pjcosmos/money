@@ -61,7 +61,7 @@ const addMemoBtn = document.getElementById('add-memo-btn');
 const memoList = document.getElementById('memo-list');
 
 // --- LOGIN LOGIC ---
-const CORRECT_PASSWORD = 'your_password'; // !! IMPORTANT: Change this to a secure password !!
+const CORRECT_PASSWORD = '0901';
 
 function checkLogin() {
     if (localStorage.getItem('loggedIn') === 'true') {

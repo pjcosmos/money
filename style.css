@@ -9,12 +9,13 @@
     --text-primary-color: #f5f6fa;
     --text-secondary-color: #a7a7a7;
     --border-color: rgba(255, 255, 255, 0.08);
-    --shadow-color: rgba(0, 0, 0, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+    --body-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e); /* Luxurious dark gradient */
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: var(--background-color);
+    background: var(--body-gradient); /* Use the new gradient */
     color: var(--text-primary-color);
     font-size: 16px;
     font-weight: 400;
@@ -39,6 +40,33 @@ h1 {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    perspective: 1000px; /* For a subtle 3D effect on the form */
+}
+
+#login-container .card-header h3 {
+    color: var(--primary-variant-color);
+    font-size: 2.2em; /* Larger font size */
+    font-weight: 700; /* Bolder */
+    letter-spacing: 1px; /* Spaced out letters */
+    text-shadow: 0 0 10px rgba(228, 63, 90, 0.5); /* Glowing effect */
+    margin-bottom: 0; /* Remove default margin */
+}
+
+#login-form {
+    background-color: var(--surface-color); /* Use a consistent surface color */
+    border-radius: 15px; /* Slightly larger border-radius */
+    padding: 40px; /* More padding for a luxurious feel */
+    box-shadow: 0 15px 30px var(--shadow-color); /* More prominent shadow */
+    max-width: 400px; /* Control the width of the form */
+    width: 90%; /* Responsive width */
+    transform: rotateY(0deg) scale(1); /* Initial state for potential animation */
+    transition: all 0.6s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+#login-form:hover {
+    transform: rotateY(2deg) scale(1.01); /* Subtle hover effect */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 #app-content.d-none {
@@ -85,13 +113,13 @@ h1 {
     background-color: #1f2a40;
     border: 1px solid var(--border-color);
     color: var(--text-primary-color);
-    border-radius: 8px;
+    border-radius: 10px; /* Slightly larger border-radius */
     transition: all 0.2s ease-in-out;
 }
 .form-control:focus {
     box-shadow: 0 0 0 0.2rem rgba(228, 63, 90, 0.25);
     border-color: var(--primary-variant-color);
-    background-color: #253352;
+    background-color: #2b3a5a; /* Slightly darker on focus */
 }
 .form-control::placeholder {
     color: var(--text-secondary-color);
@@ -120,9 +148,15 @@ h1 {
 .btn-primary {
     background-image: linear-gradient(to right, #e43f5a, #b83b5e);
     color: #fff;
+    padding: 12px 25px; /* Slightly larger padding */
+    font-size: 1.1em; /* Slightly larger font */
+    letter-spacing: 0.5px; /* Subtle letter spacing */
+    box-shadow: 0 5px 15px rgba(228, 63, 90, 0.4); /* Initial subtle shadow */
 }
 .btn-primary:hover {
-    background-image: linear-gradient(to right, #b83b5e, #e43f5a);
+    background-image: linear-gradient(to right, #b83b5e, #e43f5a); /* Reverse gradient on hover */
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 8px 20px rgba(228, 63, 90, 0.6); /* Stronger shadow on hover */
 }
 .btn-secondary {
     background: none;
