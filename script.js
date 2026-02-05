@@ -1,4 +1,10 @@
 // DOM Elements
+const loginForm = document.getElementById('login-form');
+const passwordInput = document.getElementById('password');
+const loginError = document.getElementById('login-error');
+const loginContainer = document.getElementById('login-container');
+const appContent = document.getElementById('app-content');
+
 const balance = document.getElementById('balance');
 const incomeEl = document.getElementById('income');
 const expenseEl = document.getElementById('expense');
@@ -53,6 +59,37 @@ const unallocatedAmountSpan = document.getElementById('unallocated-amount');
 const memoInput = document.getElementById('memo-input');
 const addMemoBtn = document.getElementById('add-memo-btn');
 const memoList = document.getElementById('memo-list');
+
+// --- LOGIN LOGIC ---
+const CORRECT_PASSWORD = 'your_password'; // !! IMPORTANT: Change this to a secure password !!
+
+function checkLogin() {
+    if (localStorage.getItem('loggedIn') === 'true') {
+        loginContainer.classList.add('d-none');
+        appContent.classList.remove('d-none');
+        init(); // Initialize the app only after successful login
+    } else {
+        loginContainer.classList.remove('d-none');
+        appContent.classList.add('d-none');
+    }
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const enteredPassword = passwordInput.value;
+
+    if (enteredPassword === CORRECT_PASSWORD) {
+        localStorage.setItem('loggedIn', 'true');
+        loginContainer.classList.add('d-none');
+        appContent.classList.remove('d-none');
+        init(); // Initialize the app after successful login
+        loginError.classList.add('d-none'); // Hide any previous error
+    } else {
+        loginError.textContent = '잘못된 비밀번호입니다.';
+        loginError.classList.remove('d-none');
+        passwordInput.value = ''; // Clear password input
+    }
+}
 
 
 // --- APP STATE ---
@@ -632,7 +669,11 @@ function init() {
 }
 
 // Initial Load & Event Listeners
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    checkLogin(); // Check login status on page load
+});
+loginForm.addEventListener('submit', handleLogin); // Handle login form submission
+
 form.addEventListener('submit', addTransaction);
 editTransactionForm.addEventListener('submit', saveTransactionChanges);
 addIncomeCategoryForm.addEventListener('submit', addCategory);

@@ -11,6 +11,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="login-container" class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>로그인</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label for="password">비밀번호</label>
+                                <input type="password" id="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">로그인</button>
+                            <div id="login-error" class="alert alert-danger mt-3 d-none"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-content" class="d-none">
     <div class="container">
         <h1 class="text-center my-4">My Money Manager</h1>
         
@@ -273,6 +296,8 @@
         </div>
     </div>
 
+
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>

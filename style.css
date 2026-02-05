@@ -32,6 +32,19 @@ h1 {
     text-shadow: 1px 1px 3px var(--shadow-color);
 }
 
+/* Login specific styles */
+#login-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#app-content.d-none {
+    display: none !important;
+}
+
 /* 2. Layout & Main Container */
 .container {
     max-width: 1300px;
@@ -279,4 +292,15 @@ h1 {
 
 #memo-list .memo-delete-btn:hover {
     color: var(--primary-variant-color);
+}
+
+/* Progress bar for budget view */
+.progress {
+    background-color: var(--border-color);
+    border-radius: 5px;
+}
+
+.progress-bar {
+    background-color: var(--primary-variant-color);
+    transition: width 0.6s ease;
 }
